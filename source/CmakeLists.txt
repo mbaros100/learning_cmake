@@ -1,0 +1,37 @@
+cmake_minimum_required (VERSION 3.10)
+project(MediaTools VERSION 0.0.1 LANGUAGES CXX)
+ 
+
+set(TBVG_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
+set(TBVG_INCLUDE_FILES 
+    ${TBVG_INCLUDE_DIR}/myheader.h
+)
+
+set(TBVG_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+set(TBVG_SOURCE_FILES
+    ${TBVG_SOURCE_DIR}/source.cpp
+)
+
+
+#TBVG is designed to be used as a static library but if you really want to try shared, swith to ON
+option(BUILD_SHARED_LIBS "Whether to build TBVG as a shared library (default is static).")
+mark_as_advanced(BUILD_SHARED_LIBS)
+
+foreach(flag_var
+        CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE
+        CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO)
+   if(${flag_var} MATCHES "/MD")
+      string(REGEX REPLACE "/MD" "/MT" ${flag_var} "${${flag_var}}")
+   endif(${flag_var} MATCHES "/MD")
+endforeach(flag_var)
+
+
+# add the binary tree to the search path for include files
+# so that we will find TutorialConfig.h
+#include_directories("${PROJECT_BINARY_DIR}")
+ 
+# add the executable or library
+#add_library(Test_Cmake_by_Gevorgyan ${TBVG_SOURCE_FILES})
+add_executable(myProject ${TBVG_SOURCE_FILES} )
+target_include_directories(myProject PRIVATE ${TBVG_INCLUDE_DIR})
+ 
